@@ -13,6 +13,10 @@ export interface Company {
   revenue: number;
   averageCheck: number;
   orders: number;
+  privateOrderShare: number;
+  b2bOrderShare: number;
+  privateAverageCheck: number;
+  privateMarketFit: number;
   vehicles: number;
   fleetUtilization: number;
   averageDispatchTime: number;
@@ -36,6 +40,12 @@ export interface Company {
 }
 
 export interface ScoredCompany extends Company {
+  modeledOrders: number;
+  orderAuditDelta: number;
+  privateOrders: number;
+  b2bOrders: number;
+  strengthInsights: string[];
+  weaknessInsights: string[];
   competitivenessIndex: number;
   operationalEfficiencyIndex: number;
   customerTrustIndex: number;

@@ -34,6 +34,10 @@ export const companies: Company[] = [
     revenue: 3058,
     averageCheck: 6850,
     orders: 446400,
+    privateOrderShare: 52,
+    b2bOrderShare: 48,
+    privateAverageCheck: 5900,
+    privateMarketFit: 88,
     vehicles: 1620,
     fleetUtilization: 82,
     averageDispatchTime: 38,
@@ -64,6 +68,10 @@ export const companies: Company[] = [
     revenue: 2493,
     averageCheck: 5120,
     orders: 487000,
+    privateOrderShare: 62,
+    b2bOrderShare: 38,
+    privateAverageCheck: 4200,
+    privateMarketFit: 82,
     vehicles: 1380,
     fleetUtilization: 79,
     averageDispatchTime: 29,
@@ -94,6 +102,10 @@ export const companies: Company[] = [
     revenue: 1893,
     averageCheck: 7450,
     orders: 254000,
+    privateOrderShare: 41,
+    b2bOrderShare: 59,
+    privateAverageCheck: 6400,
+    privateMarketFit: 70,
     vehicles: 940,
     fleetUtilization: 76,
     averageDispatchTime: 52,
@@ -124,6 +136,10 @@ export const companies: Company[] = [
     revenue: 1747,
     averageCheck: 4680,
     orders: 373300,
+    privateOrderShare: 66,
+    b2bOrderShare: 34,
+    privateAverageCheck: 3600,
+    privateMarketFit: 78,
     vehicles: 1180,
     fleetUtilization: 81,
     averageDispatchTime: 24,
@@ -154,6 +170,10 @@ export const companies: Company[] = [
     revenue: 1602,
     averageCheck: 8120,
     orders: 197300,
+    privateOrderShare: 24,
+    b2bOrderShare: 76,
+    privateAverageCheck: 6900,
+    privateMarketFit: 48,
     vehicles: 760,
     fleetUtilization: 74,
     averageDispatchTime: 61,
@@ -184,6 +204,10 @@ export const companies: Company[] = [
     revenue: 1256,
     averageCheck: 9100,
     orders: 138000,
+    privateOrderShare: 58,
+    b2bOrderShare: 42,
+    privateAverageCheck: 8300,
+    privateMarketFit: 72,
     vehicles: 520,
     fleetUtilization: 71,
     averageDispatchTime: 69,
@@ -214,6 +238,10 @@ export const companies: Company[] = [
     revenue: 1673,
     averageCheck: 6020,
     orders: 278000,
+    privateOrderShare: 55,
+    b2bOrderShare: 45,
+    privateAverageCheck: 5200,
+    privateMarketFit: 86,
     vehicles: 980,
     fleetUtilization: 84,
     averageDispatchTime: 31,
@@ -244,6 +272,10 @@ export const companies: Company[] = [
     revenue: 1058,
     averageCheck: 4320,
     orders: 245000,
+    privateOrderShare: 68,
+    b2bOrderShare: 32,
+    privateAverageCheck: 3400,
+    privateMarketFit: 79,
     vehicles: 790,
     fleetUtilization: 80,
     averageDispatchTime: 23,
@@ -274,6 +306,10 @@ export const companies: Company[] = [
     revenue: 918,
     averageCheck: 4650,
     orders: 197400,
+    privateOrderShare: 64,
+    b2bOrderShare: 36,
+    privateAverageCheck: 3800,
+    privateMarketFit: 81,
     vehicles: 710,
     fleetUtilization: 78,
     averageDispatchTime: 27,
@@ -304,6 +340,10 @@ export const companies: Company[] = [
     revenue: 713,
     averageCheck: 6900,
     orders: 103300,
+    privateOrderShare: 43,
+    b2bOrderShare: 57,
+    privateAverageCheck: 6100,
+    privateMarketFit: 67,
     vehicles: 430,
     fleetUtilization: 73,
     averageDispatchTime: 49,
@@ -334,6 +374,10 @@ export const companies: Company[] = [
     revenue: 607,
     averageCheck: 7800,
     orders: 77800,
+    privateOrderShare: 61,
+    b2bOrderShare: 39,
+    privateAverageCheck: 7200,
+    privateMarketFit: 74,
     vehicles: 310,
     fleetUtilization: 72,
     averageDispatchTime: 58,
@@ -364,6 +408,10 @@ export const companies: Company[] = [
     revenue: 558,
     averageCheck: 7600,
     orders: 73400,
+    privateOrderShare: 22,
+    b2bOrderShare: 78,
+    privateAverageCheck: 6600,
+    privateMarketFit: 45,
     vehicles: 280,
     fleetUtilization: 70,
     averageDispatchTime: 63,
@@ -392,7 +440,55 @@ const clamp = (value: number, min = 0, max = 100) => Math.max(min, Math.min(max,
 const scoreLowerIsBetter = (value: number, min: number, max: number) => clamp(((max - value) / (max - min)) * 100);
 const scoreHigherIsBetter = (value: number, min: number, max: number) => clamp(((value - min) / (max - min)) * 100);
 
+function buildStrengthInsights(company: Company): string[] {
+  const insights: string[] = [];
+
+  if (company.vehicles >= 900) {
+    insights.push(`Масштаб парка (${company.vehicles.toLocaleString('ru-RU')} машин) снижает риск отказа в срочных частных заказах и дает плотность покрытия.`);
+  }
+  if (company.averageDispatchTime <= 35) {
+    insights.push(`Быстрая подача (${company.averageDispatchTime} мин) критична для частного спроса: клиенты чаще выбирают исполнителя в моменте, а не после долгого сравнения.`);
+  }
+  if (company.repeatOrders >= 40) {
+    insights.push(`Повторные заказы ${company.repeatOrders}% показывают устойчивое доверие и дают более дешевый рост без постоянного давления на рекламный бюджет.`);
+  }
+  if (company.privateOrderShare >= 58) {
+    insights.push(`Высокая доля частных заказов (${company.privateOrderShare}%) делает бренд чувствительным к отзывам, но повышает объем коротких городских перевозок.`);
+  }
+  if (company.margin >= 24) {
+    insights.push(`Маржинальность ${company.margin}% оставляет пространство для скидок, пакетных тарифов и инвестиций в качество без немедленного провала экономики.`);
+  }
+
+  return insights.slice(0, 4);
+}
+
+function buildWeaknessInsights(company: Company): string[] {
+  const insights: string[] = [];
+
+  if (company.averageDispatchTime >= 50) {
+    insights.push(`Подача ${company.averageDispatchTime} мин ухудшает конверсию частных заявок: клиент с переездом или покупкой с маркетплейса часто выбирает ближайшую машину.`);
+  }
+  if (company.minimumOrderCost >= 3100) {
+    insights.push(`Минимальный заказ ${company.minimumOrderCost.toLocaleString('ru-RU')} ₽ отсекает короткие частные перевозки, где решение принимается по порогу входа.`);
+  }
+  if (company.digitalMaturity <= 76) {
+    insights.push(`Цифровая зрелость ${company.digitalMaturity}/100 ограничивает самообслуживание: дороже лид, больше ручной диспетчеризации и слабее прозрачность статуса.`);
+  }
+  if (company.vehicles <= 520) {
+    insights.push(`Парк ${company.vehicles} машин ограничивает масштабирование в пиковые окна и повышает риск просадки SLA при всплеске частного спроса.`);
+  }
+  if (company.margin <= 20) {
+    insights.push(`Маржинальность ${company.margin}% делает рост через скидки рискованным: нужно монетизировать допуслуги, а не только снижать цену.`);
+  }
+
+  return insights.slice(0, 4);
+}
+
 export function scoreCompany(company: Company): ScoredCompany {
+  const modeledOrders = Math.round((company.revenue * 1_000_000) / company.averageCheck);
+  const orderAuditDelta = company.orders - modeledOrders;
+  const privateOrders = Math.round(company.orders * (company.privateOrderShare / 100));
+  const b2bOrders = company.orders - privateOrders;
   const financialIndex = clamp(company.margin * 1.6 + scoreHigherIsBetter(company.ebitda, 120, 730) * 0.35 + scoreHigherIsBetter(company.ltv / company.cac, 12, 26) * 0.25);
   const operationalEfficiencyIndex = clamp(company.operationalEfficiency * 0.45 + company.fleetUtilization * 0.25 + scoreLowerIsBetter(company.averageDispatchTime, 20, 75) * 0.2 + company.serviceStability * 0.1);
   const customerTrustIndex = clamp(scoreHigherIsBetter(company.customerRating, 4.25, 4.75) * 0.45 + scoreHigherIsBetter(company.reviews, 4500, 32000) * 0.25 + company.repeatOrders * 0.3);
@@ -403,7 +499,8 @@ export function scoreCompany(company: Company): ScoredCompany {
       scoreHigherIsBetter(company.vehicles, 250, 1650) * 0.25 +
       operationalEfficiencyIndex * 0.25 +
       customerTrustIndex * 0.2 +
-      digitalMaturityIndex * 0.1,
+      digitalMaturityIndex * 0.1 +
+      company.privateMarketFit * 0.08,
   );
   const overallRating = clamp(
     financialIndex * 0.2 +
@@ -412,11 +509,18 @@ export function scoreCompany(company: Company): ScoredCompany {
       priceAttractivenessIndex * 0.12 +
       company.serviceStability * 0.12 +
       company.repeatOrders * 0.1 +
-      scoreHigherIsBetter(company.vehicles, 250, 1650) * 0.14,
+      scoreHigherIsBetter(company.vehicles, 250, 1650) * 0.1 +
+      company.privateMarketFit * 0.04,
   );
 
   return {
     ...company,
+    modeledOrders,
+    orderAuditDelta,
+    privateOrders,
+    b2bOrders,
+    strengthInsights: buildStrengthInsights(company),
+    weaknessInsights: buildWeaknessInsights(company),
     competitivenessIndex: Math.round(competitivenessIndex),
     operationalEfficiencyIndex: Math.round(operationalEfficiencyIndex),
     customerTrustIndex: Math.round(customerTrustIndex),

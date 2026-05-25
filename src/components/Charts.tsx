@@ -65,6 +65,31 @@ export function ComparisonBarChart({ companies }: { companies: ScoredCompany[] }
   );
 }
 
+export function PrivateOrdersChart({ companies }: { companies: ScoredCompany[] }) {
+  const data = companies.map((company) => ({
+    name: company.name.replace(' Грузовая', ''),
+    Частные: company.privateOrders,
+    B2B: company.b2bOrders,
+    fit: company.privateMarketFit,
+  }));
+
+  return (
+    <ChartShell title="Рынок частных заказов" note="Оценка распределения заказов между частными клиентами и B2B">
+      <ResponsiveContainer width="100%" height={320}>
+        <BarChart data={data} margin={{ top: 12, right: 8, bottom: 48, left: 0 }}>
+          <CartesianGrid strokeDasharray="4 4" stroke="#d8cda7" />
+          <XAxis dataKey="name" angle={-22} textAnchor="end" height={72} tick={{ fill: '#243047', fontSize: 11, fontWeight: 700 }} />
+          <YAxis tick={{ fill: '#243047', fontSize: 12 }} />
+          <Tooltip formatter={(value) => Number(value).toLocaleString('ru-RU')} />
+          <Legend />
+          <Bar dataKey="Частные" stackId="orders" fill="#FF78B7" radius={[8, 8, 0, 0]} />
+          <Bar dataKey="B2B" stackId="orders" fill="#66D9EF" radius={[8, 8, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </ChartShell>
+  );
+}
+
 export function CompanyRadarChart({ company }: { company: ScoredCompany }) {
   const data = [
     { metric: 'Финансы', value: company.financialIndex },
@@ -107,8 +132,8 @@ export function SwotHeatmap({ companies }: { companies: ScoredCompany[] }) {
               <span className="rounded-full border-2 border-ink bg-white px-2 py-1 text-xs font-black">{company.overallRating}</span>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <HeatCell label="Сила" value={company.strengths.length * 25} color="bg-meadow" text={company.strengths[0]} />
-              <HeatCell label="Риск" value={company.weaknesses.length * 30} color="bg-candy" text={company.weaknesses[0]} />
+              <HeatCell label="Сила" value={company.strengthInsights.length * 25} color="bg-meadow" text={company.strengthInsights[0] ?? company.strengths[0]} />
+              <HeatCell label="Риск" value={company.weaknessInsights.length * 30} color="bg-candy" text={company.weaknessInsights[0] ?? company.weaknesses[0]} />
             </div>
           </div>
         ))}

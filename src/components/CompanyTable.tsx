@@ -23,6 +23,8 @@ export function CompanyTable({ companies, metricGroup }: CompanyTableProps) {
               <th className="px-4 py-3">Регион</th>
               <th className="px-4 py-3">Рейтинг</th>
               <th className="px-4 py-3">Доля</th>
+              <th className="px-4 py-3">Частные</th>
+              <th className="px-4 py-3">Аудит заказов</th>
               {showFinancial && <th className="px-4 py-3">Выручка</th>}
               {showFinancial && <th className="px-4 py-3">EBITDA</th>}
               {showOperational && <th className="px-4 py-3">Машины</th>}
@@ -42,6 +44,8 @@ export function CompanyTable({ companies, metricGroup }: CompanyTableProps) {
                   <span className="rounded-full border-2 border-ink bg-sunpop px-3 py-1 font-black">{company.overallRating}</span>
                 </td>
                 <td className="px-4 py-3 font-bold">{company.marketShare}%</td>
+                <td className="px-4 py-3 font-bold">{company.privateOrderShare}% / {compactNumber.format(company.privateOrders)}</td>
+                <td className="px-4 py-3 text-xs font-bold text-ink/70">{company.orderAuditDelta >= 0 ? '+' : ''}{compactNumber.format(company.orderAuditDelta)} к модели</td>
                 {showFinancial && <td className="px-4 py-3 font-bold">{compactNumber.format(company.revenue)} млн ₽</td>}
                 {showFinancial && <td className="px-4 py-3">{company.ebitda} млн ₽</td>}
                 {showOperational && <td className="px-4 py-3">{compactNumber.format(company.vehicles)}</td>}

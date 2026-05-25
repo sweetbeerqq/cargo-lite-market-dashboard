@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Download, Gauge, MapPinned, Percent, Route, Sparkles, Truck, WalletCards } from 'lucide-react';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { CompanyTable } from './components/CompanyTable';
-import { CompanyRadarChart, ComparisonBarChart, MarketShareChart, SwotHeatmap } from './components/Charts';
+import { CompanyRadarChart, ComparisonBarChart, MarketShareChart, PrivateOrdersChart, SwotHeatmap } from './components/Charts';
 import { Filters } from './components/Filters';
 import { InsightPanels } from './components/InsightPanels';
 import { KpiCard } from './components/KpiCard';
@@ -50,6 +50,8 @@ function App() {
     revenue: filteredCompanies.reduce((sum, company) => sum + company.revenue, 0),
     orders: filteredCompanies.reduce((sum, company) => sum + company.orders, 0),
     vehicles: filteredCompanies.reduce((sum, company) => sum + company.vehicles, 0),
+    privateOrders: filteredCompanies.reduce((sum, company) => sum + company.privateOrders, 0),
+    averagePrivateShare: Math.round(filteredCompanies.reduce((sum, company) => sum + company.privateOrderShare, 0) / Math.max(filteredCompanies.length, 1)),
     marketShare: Number(filteredCompanies.reduce((sum, company) => sum + company.marketShare, 0).toFixed(1)),
     rating: Math.round(filteredCompanies.reduce((sum, company) => sum + company.overallRating, 0) / Math.max(filteredCompanies.length, 1)),
   };
@@ -119,9 +121,10 @@ function App() {
           setSortKey={setSortKey}
         />
 
-        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
           <KpiCard title="Выручка топа" value={formatMoney(totals.revenue)} note="Сумма по выбранному срезу" icon={WalletCards} accent="bg-sunpop" />
           <KpiCard title="Заказы" value={totals.orders.toLocaleString('ru-RU')} note="Годовая оценка заказов" icon={Route} accent="bg-skyjam" />
+          <KpiCard title="Частные заказы" value={totals.privateOrders.toLocaleString('ru-RU')} note={`В среднем ${totals.averagePrivateShare}% спроса`} icon={Sparkles} accent="bg-candy/60" />
           <KpiCard title="Автопарк" value={totals.vehicles.toLocaleString('ru-RU')} note="Машины до 3.5 т" icon={Truck} accent="bg-meadow" />
           <KpiCard title="Покрытие рынка" value={`${totals.marketShare}%`} note="Доля топ-игроков" icon={Percent} accent="bg-candy" />
           <KpiCard title="Средний рейтинг" value={`${totals.rating}/100`} note="Расчетный общий индекс" icon={Gauge} accent="bg-plum/30" />
@@ -132,6 +135,23 @@ function App() {
         <section className="grid gap-5 xl:grid-cols-2">
           <MarketShareChart companies={filteredCompanies} />
           <ComparisonBarChart companies={filteredCompanies} />
+        </section>
+
+        <section className="grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
+          <PrivateOrdersChart companies={filteredCompanies} />
+          <div className="toon-card rounded-[24px] bg-white/95 p-5">
+            <h2 className="font-display text-xl font-black">Аудит количества заказов</h2>
+            <p className="mt-2 text-sm font-bold leading-6 text-ink/70">
+              Количество заказов проверяется расчетом: выручка / средний чек. Разница показывает округление и допустимый шум demo-модели.
+            </p>
+            <div className="mt-4 grid gap-2">
+              {filteredCompanies.slice(0, 6).map((company) => (
+                <div key={company.id} className="rounded-2xl border-2 border-ink bg-cream p-3 text-sm font-bold">
+                  {company.name}: {company.orders.toLocaleString('ru-RU')} в датасете, {company.modeledOrders.toLocaleString('ru-RU')} по расчету, {company.orderAuditDelta >= 0 ? '+' : ''}{company.orderAuditDelta.toLocaleString('ru-RU')} разница.
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
 
         <section className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
@@ -181,6 +201,12 @@ function App() {
                 <div key={item} className="rounded-2xl border-2 border-ink bg-candy/20 p-3 text-sm font-bold">{item}</div>
               ))}
             </div>
+            <h3 className="mt-5 font-black">Размышления по SWOT</h3>
+            <div className="mt-2 space-y-2">
+              {[...selectedCompany.strengthInsights, ...selectedCompany.weaknessInsights].map((item) => (
+                <div key={item} className="rounded-2xl border-2 border-ink bg-cream p-3 text-sm font-bold leading-6">{item}</div>
+              ))}
+            </div>
           </aside>
         </section>
 
@@ -201,7 +227,7 @@ function App() {
           <div className="toon-card rounded-[24px] bg-plum/20 p-5">
             <h2 className="font-display text-xl font-black">Раздел выгрузки данных в Excel</h2>
             <p className="mt-2 text-sm font-bold leading-6 text-ink/70">
-              Файл содержит листы Summary, Moscow_MO, SPB_LO, Top_Companies, Financial_Metrics, Operational_Metrics, SWOT и Recommendations.
+              Файл содержит листы Summary, Moscow_MO, SPB_LO, Top_Companies, Private_Orders, Financial_Metrics, Operational_Metrics, SWOT и Recommendations.
             </p>
             <button
               onClick={() => exportDashboardToExcel(scoredCompanies)}
