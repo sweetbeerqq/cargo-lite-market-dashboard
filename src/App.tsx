@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Download, Gauge, MapPinned, Percent, Route, Sparkles, Truck, WalletCards } from 'lucide-react';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { CompanyTable } from './components/CompanyTable';
-import { CompanyRadarChart, ComparisonBarChart, MarketShareChart, PrivateOrdersChart, SwotHeatmap } from './components/Charts';
+import { CompanyRadarChart, ComparisonBarChart, FinancialComparisonChart, MarketShareChart, OperationalComparisonChart, PrivateOrdersChart, SwotHeatmap } from './components/Charts';
 import { Filters } from './components/Filters';
 import { InsightPanels } from './components/InsightPanels';
 import { KpiCard } from './components/KpiCard';
@@ -55,20 +55,21 @@ function App() {
     marketShare: Number(filteredCompanies.reduce((sum, company) => sum + company.marketShare, 0).toFixed(1)),
     rating: Math.round(filteredCompanies.reduce((sum, company) => sum + company.overallRating, 0) / Math.max(filteredCompanies.length, 1)),
   };
+  const yandexCompanies = scoredCompanies.filter((company) => company.id.includes('yandex-delivery'));
 
   return (
     <main className="fantasy-bg min-h-screen text-ink">
       <section className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-5 sm:px-6 lg:px-8">
-        <header className="relative overflow-hidden rounded-[32px] border-[3px] border-ink bg-white/80 p-5 shadow-toon">
-          <div className="absolute -right-8 -top-10 h-36 w-36 rounded-full border-[12px] border-sunpop bg-skyjam/60" />
+        <header className="relative overflow-hidden rounded-2xl border border-ink/10 bg-white p-6 shadow-toon">
+          <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-plum via-skyjam to-lagoon" />
           <div className="absolute bottom-0 left-0 h-14 w-full bg-meadow/30 wave" />
           <div className="relative z-10 grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
             <div>
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full border-2 border-ink bg-sunpop px-3 py-1 text-xs font-black uppercase">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-md border border-ink/10 bg-cream px-3 py-1 text-xs font-black uppercase text-ink/70">
                 <Sparkles className="h-4 w-4" />
                 оценочные / demo data
               </div>
-              <h1 className="font-display text-3xl font-black leading-tight sm:text-5xl">
+              <h1 className="font-display text-3xl font-black leading-tight tracking-tight sm:text-5xl">
                 Аналитика малотоннажных грузоперевозок
               </h1>
               <p className="mt-3 max-w-3xl text-base font-bold leading-7 text-ink/72">
@@ -77,7 +78,7 @@ function App() {
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               {regionSummary.map((item, index) => (
-                <div key={item.name} className="toon-card rounded-[24px] bg-cream p-4">
+                <div key={item.name} className="toon-card rounded-xl bg-cream p-4">
                   <div className="h-24">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -103,7 +104,7 @@ function App() {
             <button
               key={tab.id}
               onClick={() => setRegion(tab.id)}
-              className={`shrink-0 rounded-full border-2 border-ink px-5 py-2 text-sm font-black shadow-[0_4px_0_rgba(36,48,71,0.18)] transition ${region === tab.id ? 'bg-candy text-white' : 'bg-white hover:bg-sunpop'}`}
+              className={`shrink-0 rounded-lg border border-ink/10 px-5 py-2 text-sm font-black shadow-sm transition ${region === tab.id ? 'bg-ink text-white' : 'bg-white hover:bg-cream'}`}
             >
               {tab.label}
             </button>
@@ -137,6 +138,11 @@ function App() {
           <ComparisonBarChart companies={filteredCompanies} />
         </section>
 
+        <section className="grid gap-5 xl:grid-cols-2">
+          <FinancialComparisonChart companies={filteredCompanies} />
+          <OperationalComparisonChart companies={filteredCompanies} />
+        </section>
+
         <section className="grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
           <PrivateOrdersChart companies={filteredCompanies} />
           <div className="toon-card rounded-[24px] bg-white/95 p-5">
@@ -151,6 +157,33 @@ function App() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        <section className="toon-card rounded-xl bg-white p-5">
+          <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 className="font-display text-xl font-black">Проверка Яндекс Доставки</h2>
+              <p className="mt-1 text-sm font-bold leading-6 text-ink/65">
+                Точные публичные данные по доле рынка и заказам грузовой Яндекс Доставки в этих регионах не раскрываются. Ниже показана проверка demo-оценки через выручку и средний чек.
+              </p>
+            </div>
+            <span className="rounded-md border border-ink/10 bg-cream px-3 py-1 text-xs font-black uppercase text-ink/70">demo estimate</span>
+          </div>
+          <div className="grid gap-3 md:grid-cols-2">
+            {yandexCompanies.map((company) => (
+              <div key={company.id} className="rounded-xl border border-ink/10 bg-cream p-4">
+                <h3 className="font-black">{company.regionName}</h3>
+                <div className="mt-3 grid gap-2 text-sm font-bold text-ink/75 sm:grid-cols-2">
+                  <span>Доля рынка: {company.marketShare}%</span>
+                  <span>Заказы: {company.orders.toLocaleString('ru-RU')}</span>
+                  <span>Расчет заказов: {company.modeledOrders.toLocaleString('ru-RU')}</span>
+                  <span>Отклонение: {company.orderAuditDelta >= 0 ? '+' : ''}{company.orderAuditDelta.toLocaleString('ru-RU')}</span>
+                  <span>Средний чек: {company.averageCheck.toLocaleString('ru-RU')} ₽</span>
+                  <span>Частные заказы: {company.privateOrderShare}%</span>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 

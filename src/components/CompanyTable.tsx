@@ -14,7 +14,7 @@ export function CompanyTable({ companies, metricGroup }: CompanyTableProps) {
   const showPricing = metricGroup === 'all' || metricGroup === 'pricing';
 
   return (
-    <div className="toon-card overflow-hidden rounded-[24px] bg-white/95">
+    <div className="toon-card overflow-hidden rounded-xl bg-white">
       <div className="overflow-x-auto">
         <table className="min-w-[1100px] w-full text-left text-sm">
           <thead className="bg-ink text-white">
@@ -41,7 +41,7 @@ export function CompanyTable({ companies, metricGroup }: CompanyTableProps) {
                 <td className="px-4 py-3 font-black">{company.name}</td>
                 <td className="px-4 py-3 font-semibold text-ink/70">{company.regionName}</td>
                 <td className="px-4 py-3">
-                  <span className="rounded-full border-2 border-ink bg-sunpop px-3 py-1 font-black">{company.overallRating}</span>
+                  <span className="rounded-md border border-ink/10 bg-sunpop/15 px-3 py-1 font-black text-ink">{company.overallRating}</span>
                 </td>
                 <td className="px-4 py-3 font-bold">{company.marketShare}%</td>
                 <td className="px-4 py-3 font-bold">{company.privateOrderShare}% / {compactNumber.format(company.privateOrders)}</td>

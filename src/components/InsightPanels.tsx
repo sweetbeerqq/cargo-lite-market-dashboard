@@ -33,8 +33,8 @@ export function InsightPanels({ companies }: { companies: ScoredCompany[] }) {
 
 function Panel({ icon: Icon, title, text, color }: { icon: ComponentType<{ className?: string }>; title: string; text: string; color: string }) {
   return (
-    <div className={`toon-card rounded-[24px] ${color} p-5`}>
-      <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl border-2 border-ink bg-white">
+    <div className={`toon-card rounded-xl bg-white p-5`}>
+      <div className={`mb-3 flex h-11 w-11 items-center justify-center rounded-lg border border-ink/10 ${color}`}>
         <Icon className="h-6 w-6" />
       </div>
       <h3 className="font-display text-lg font-black">{title}</h3>

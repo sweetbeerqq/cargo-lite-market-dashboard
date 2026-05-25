@@ -10,13 +10,13 @@ interface KpiCardProps {
 
 export function KpiCard({ title, value, note, icon: Icon, accent }: KpiCardProps) {
   return (
-    <div className="toon-card rounded-[24px] bg-white/90 p-4">
+    <div className="toon-card rounded-xl bg-white p-4">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-xs font-black uppercase tracking-wide text-ink/60">{title}</p>
           <p className="mt-2 font-display text-2xl font-black text-ink">{value}</p>
         </div>
-        <div className={`rounded-2xl border-2 border-ink p-2 ${accent}`}>
+        <div className={`rounded-lg border border-ink/10 p-2 ${accent}`}>
           <Icon className="h-5 w-5 text-ink" />
         </div>
       </div>
