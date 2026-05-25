@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #243047;
+  background: #fff7df;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.fantasy-bg {
+  background:
+    radial-gradient(circle at 12% 16%, rgba(255, 209, 102, 0.55) 0 9%, transparent 10%),
+    radial-gradient(circle at 84% 12%, rgba(102, 217, 239, 0.55) 0 11%, transparent 12%),
+    linear-gradient(180deg, #c9f4ff 0%, #fff7df 42%, #d9f9c7 100%);
+}
+
+.toon-card {
+  border: 3px solid #243047;
+  box-shadow: 0 7px 0 rgba(36, 48, 71, 0.18);
+}
+
+.wave {
+  clip-path: polygon(0 7%, 8% 4%, 16% 8%, 25% 3%, 35% 7%, 45% 4%, 56% 8%, 67% 3%, 78% 7%, 89% 4%, 100% 8%, 100% 100%, 0 100%);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
